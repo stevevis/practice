@@ -1,0 +1,13 @@
+{
+  "camelcase": true,
+  "curly": true,
+  "eqeqeq": true,
+  "latedef": true,
+  "undef": true,
+  "unused": true,
+  "asi": true,
+  "node": true,
+  "eqnull": true,
+  "esnext": true
+  "laxcomma": true
+}
