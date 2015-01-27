@@ -1,15 +1,18 @@
+package com.stevevis.boggle;
+
 import com.stevevis.dictionary.DictionaryFactory;
 import com.stevevis.dictionary.IDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Steve on 12/11/14.
  */
 public class Boggle {
-    private static final int BOARD_SIZE = 5;
+    private static final int BOARD_SIZE = 4;
 
     private IDictionary dictionary;
     private char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
@@ -83,6 +86,10 @@ public class Boggle {
     public static void main(String[] args) {
         Boggle boggle = new Boggle();
         boggle.printBoard();
+
+        final long start = System.nanoTime();
         boggle.printWords();
+        final long durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+        System.out.println("Took " + durationMillis + "ms to complete boggle!");
     }
 }
