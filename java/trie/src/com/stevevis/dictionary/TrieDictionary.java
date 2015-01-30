@@ -42,7 +42,7 @@ public class TrieDictionary implements IDictionary {
                 return false;
             }
         }
-        return current.numChildren > 0;
+        return true;
     }
 
     @Override

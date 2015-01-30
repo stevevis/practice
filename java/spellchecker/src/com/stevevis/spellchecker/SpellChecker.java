@@ -3,19 +3,21 @@ package com.stevevis.spellchecker;
 import com.stevevis.dictionary.DictionaryFactory;
 import com.stevevis.dictionary.IDictionary;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Steve on 27/01/15.
  * See http://www.twitch.tv/problems/spellcheck
  */
 public class SpellChecker {
-    private static final String VOWELS = "aeiou";
+    public static final String VOWELS = "aeiou";
+    public static final String NO_SUGGESTION = "NO SUGGESTION!";
 
     private IDictionary dictionary;
 
@@ -34,26 +36,31 @@ public class SpellChecker {
      * @return
      */
     public String getSuggestion(String word) {
-        // Normalize the word to lower case
-        word = word.toLowerCase();
-
         // Check the word we were given first, in case it is correct
         if (dictionary.contains(word)) {
             return word;
         }
 
-        // Build up a list of possible corrections using the repeated letters rule
-        List<String> repeatsRemoved = new ArrayList<String>();
-        addRepeatsRemoved(word, 0, repeatsRemoved);
+        // Normalize the word to lower case
+        word = word.toLowerCase();
 
-        // Feed each candidate from the repeated letters rule into the vowel replacement function
-        List<String> candidates = new ArrayList<String>();
-        for (String candidate : repeatsRemoved) {
-            addAlternateVowels(candidate, 0, candidates);
+        Set<String> candidates = new HashSet<String>();
+
+        // Build up a list of possible corrections using the repeated letters rule
+        addRepeatPermutations(word, 0, candidates);
+
+        // Also add a version of each candidate with the first letter capitalized, in case of proper noun
+        addProperNounCandidates(candidates);
+
+        // Add the vowel permutations for each existing candidate suggestion
+        Set<String> vowelPermutations = new HashSet<String>();
+        for (String candidate : candidates) {
+            addVowelPermutations(candidate, 0, vowelPermutations);
         }
+        candidates.addAll(vowelPermutations);
 
         // Check all of our possible corrections against the dictionary
-        List<String> suggestions = new ArrayList<String>();
+        Set<String> suggestions = new HashSet<String>();
         for (String candidate : candidates) {
             if (dictionary.contains(candidate)) {
                 suggestions.add(candidate);
@@ -61,18 +68,10 @@ public class SpellChecker {
         }
 
         if (suggestions.size() == 0) {
-            return "NO SUGGESTION";
+            return NO_SUGGESTION;
         }
 
-        // Use the Levenshtein distance algorithm (http://en.wikipedia.org/wiki/Levenshtein_distance) to figure out the
-        // best suggestion from our list of dictionary suggestions
-        String best = "";
-        for (String suggestion : suggestions) {
-            if (StringUtils.getLevenshteinDistance(word, suggestion) < StringUtils.getLevenshteinDistance(word, best)) {
-                best = suggestion;
-            }
-        }
-        return best;
+        return getBestSuggestion(word, suggestions);
     }
 
     /**
@@ -87,7 +86,7 @@ public class SpellChecker {
      * @param startAt The index in the string to start searching from
      * @param candidates A list to add the candidate strings to
      */
-    private void addAlternateVowels(String word, int startAt, List<String> candidates) {
+    private void addVowelPermutations(String word, int startAt, Set<String> candidates) {
         for (int i = startAt; i < word.length(); i++) {
             if (VOWELS.indexOf(word.charAt(i)) >= 0) {
                 String prefix = word.substring(0, i);
@@ -97,11 +96,16 @@ public class SpellChecker {
                     char replacement = VOWELS.charAt(j);
                     String candidate = prefix + replacement + postfix;
 
+                    // If the prefix + replacement is not an actual word there is no point continuing down this branch
+                    if (!dictionary.isPrefix(prefix + replacement)) {
+                        continue;
+                    }
+
                     // Add the candidate to the list before recursing because we prefer candidates with less changes
                     candidates.add(candidate);
 
                     // Recurse each candidate to check for further vowels
-                    addAlternateVowels(candidate, i + 1, candidates);
+                    addVowelPermutations(candidate, i + 1, candidates);
                 }
 
                 return;
@@ -110,42 +114,50 @@ public class SpellChecker {
     }
 
     /**
-     * This method figures out all the different words the given string could be when the same character does not appear
-     * more than twice in a row. E.g. Strrreeeettttt could be:
-     * - Stret
-     * - Strett
-     * - Street
-     * - Streett
-     * - Strret
-     * - Strreet
-     * - Strrett
-     * - Strreett
+     * This method detects repeated characters within the word and adds all permutations of the number of characters
+     * repeated in each sequence of repeated characters to the candidate set. E.g. for wyynn it would add:
+     * - wyynn
+     * - wyyn
+     * - wynn
+     * - wyn
      *
-     * @param word The string to generate candidates from
-     * @param startAt The index in the string to start searching from
-     * @param candidates A list to add the candidate strings to
+     * @param word
+     * @param startAt
+     * @param candidates
      */
-    private void addRepeatsRemoved(String word, int startAt, List<String> candidates) {
+    private void addRepeatPermutations(String word, int startAt, Set<String> candidates) {
         for (int i = startAt + 1; i < word.length(); i++) {
             // Scan forward until we hit a repeated character
             if (word.charAt(i) == word.charAt(i - 1)) {
                 char repeat = word.charAt(i);
-                int next = i + 1;
+                int countRepeats = 1;
 
-                // Scan forward until we hit the next non repeat character, and put that index in 'next'
-                while (next < word.length()) {
-                    if (word.charAt(next) != repeat) {
+                // Count how many times this character is repeated in a row
+                for (int j = i; j < word.length(); j++) {
+                    if (word.charAt(j) == repeat) {
+                        countRepeats++;
+                    } else {
                         break;
                     }
-                    next++;
                 }
 
-                // The contents of the string before the repeated character
+                // Get the prefix and postfix to the sequence of repeated characters
                 String prefix = word.substring(0, i - 1);
+                String postfix = "";
+                if (i - 1 + countRepeats < word.length()) {
+                    postfix = word.substring(i - 1 + countRepeats, word.length());
+                }
 
-                // Recurse using (prefix + (repeat x 1) + postfix) and (prefix + (repeat x 2) + postfix)
-                addRepeatsRemoved(prefix + word.substring(next - 1, word.length()), i, candidates);
-                addRepeatsRemoved(prefix + word.substring(next - 2, word.length()), i, candidates);
+                // Build the permutations for number of repeated characters and recurse for each one
+                for (int j = 1; j <= countRepeats; j++) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(prefix);
+                    for (int k = 0; k < j; k++) {
+                        sb.append(repeat);
+                    }
+                    sb.append(postfix);
+                    addRepeatPermutations(sb.toString(), i + j - 1, candidates);
+                }
 
                 return;
             }
@@ -153,6 +165,46 @@ public class SpellChecker {
 
         // When there are no more repeat characters in the string, we can add it to our candidate list
         candidates.add(word);
+    }
+
+    /**
+     * For each word in the candidates set, add a capitalized version e.g for street add Street.
+     *
+     * @param candidates
+     */
+    private void addProperNounCandidates(Set<String> candidates) {
+        Set<String> capitalizedCandidates = new HashSet<String>();
+
+        for (String candidate : candidates) {
+            capitalizedCandidates.add(WordUtils.capitalize(candidate));
+        }
+
+        candidates.addAll(capitalizedCandidates);
+    }
+
+    /**
+     * Use the Levenshtein distance algorithm (http://en.wikipedia.org/wiki/Levenshtein_distance) to figure out the best
+     * suggestion from our list of dictionary suggestions.
+     *
+     * @param word
+     * @param suggestions
+     * @return
+     */
+    private String getBestSuggestion(String word, Set<String> suggestions) {
+        String best = "";
+        for (String suggestion : suggestions) {
+            if (StringUtils.getLevenshteinDistance(word, suggestion) < StringUtils.getLevenshteinDistance(word, best)) {
+                best = suggestion;
+            }
+        }
+        return best;
+    }
+
+    private void printCandidates(Set<String> candidates) {
+        System.out.println("All candidates:");
+        for (String candidate : candidates) {
+            System.out.println(candidate);
+        }
     }
 
     public static void main(String[] args) throws IOException {
