@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 /**
  * A linked list of nodes.
