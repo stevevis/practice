@@ -1,4 +1,6 @@
-var LinkedList = require('./LinkedList')
+"use strict";
+
+var LinkedList = require("./LinkedList")
 
 // Create the head node and initialize a list
 var head = new LinkedList.Node(1, null);
@@ -13,9 +15,9 @@ console.log("The original array...")
 list.print()
 
 console.log("\nReversing the array iteratively...")
-list.reverse_i()
+list.reverseIterative()
 list.print()
 
 console.log("\nReversing the array recursively...")
-list.reverse_r()
+list.reverseRecursive()
 list.print()

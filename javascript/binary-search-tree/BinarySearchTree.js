@@ -66,7 +66,7 @@ BinarySearchTree.Node.prototype.traverseLevelOrder = function() {
       , nextCount = 0
     while (queue.length > 0) {
         var temp = queue.shift()
-        process.stdout.write(temp.value + ' ')
+        process.stdout.write(temp.value + " ")
         currentCount--
         if (temp.left) {
             queue.push(temp.left)
@@ -77,7 +77,7 @@ BinarySearchTree.Node.prototype.traverseLevelOrder = function() {
             nextCount++
         }
         if (currentCount === 0) {
-            process.stdout.write('\n')
+            process.stdout.write("\n")
             currentCount = nextCount
             nextCount = 0
         }

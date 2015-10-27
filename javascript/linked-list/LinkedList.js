@@ -32,7 +32,7 @@ LinkedList.prototype.print = function(node) {
         node = this.head
     }
 
-    process.stdout.write(node.value + ' ')
+    process.stdout.write(node.value + " ")
 
     if (node.next) {
         this.print(node.next)
@@ -42,7 +42,7 @@ LinkedList.prototype.print = function(node) {
 /**
  * Reverse the list using an iterative approach.
  */
-LinkedList.prototype.reverse_i = function() {
+LinkedList.prototype.reverseIterative = function() {
     var previousNode = null
     var currentNode = this.head
 
@@ -59,13 +59,13 @@ LinkedList.prototype.reverse_i = function() {
 /**
  * Reverse the list recursively.
  */
-LinkedList.prototype.reverse_r = function(node) {
+LinkedList.prototype.reverseRecursive = function(node) {
     if (!node) {
         node = this.head
     }
 
     if (node.next) {
-        var next = this.reverse_r(node.next)
+        var next = this.reverseRecursive(node.next)
         next.next = node
         node.next = null
     } else {
