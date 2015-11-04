@@ -1,4 +1,6 @@
-var BinarySearchTree = require('./BinarySearchTree')
+"use strict";
+
+var BinarySearchTree = require("./BinarySearchTree")
 
 var bst = new BinarySearchTree(100)
 bst.insert(50)

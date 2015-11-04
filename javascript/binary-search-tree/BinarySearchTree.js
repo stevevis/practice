@@ -1,4 +1,4 @@
-"use strict";
+"use strict"
 
 var BinarySearchTree = function(node) {
     if (node instanceof BinarySearchTree.Node) {
@@ -21,7 +21,7 @@ BinarySearchTree.prototype.traverseInOrder = function() {
 }
 
 BinarySearchTree.prototype.traverseLevelOrder = function() {
-    this.head.traverseLevelOrder();
+    this.head.traverseLevelOrder()
 }
 
 BinarySearchTree.Node = function(value) {
@@ -35,7 +35,7 @@ BinarySearchTree.Node.prototype.insert = function(node) {
         if (this.left) {
             this.left.insert(node)
         } else {
-            this.left = node;
+            this.left = node
         }
     } else if (node.value > this.value) {
         if (this.right) {
