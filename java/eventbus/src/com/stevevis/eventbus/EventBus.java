@@ -26,6 +26,10 @@ public class EventBus {
         pool = Executors.newFixedThreadPool(poolSize);
     }
 
+    public void shutdown() {
+        pool.shutdown();
+    }
+
     public Topic registerTopic(String id) throws DuplicateTopicException {
         Topic topic = new Topic(id);
         if (topicHash.containsKey(topic)) {

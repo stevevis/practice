@@ -25,6 +25,8 @@ public class EventBusTest {
 
         eventBus.publish(topicA, "This is a message to Topic A");
         eventBus.publish(topicB, "This is a message to Topic B");
+
+        eventBus.shutdown();
     }
 
     private static void printSubscribers(EventBus e, Topic t) {
