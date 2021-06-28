@@ -19,7 +19,7 @@ TimeMap.prototype.get = function(key, time) {
 TimeMap.prototype.put = function(key, time, value) {
   var node = new TimeMap.TimeNode(time, value);
   if (!this.map[key]) {
-    this.map[key] = new TimeMap.TimeNode(time, value);
+    this.map[key] = node;
   } else {
     this.map[key].insert(node);
   }

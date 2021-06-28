@@ -137,9 +137,9 @@ Sudoku.prototype.getPossibleValues = function(x, y) {
 /*
  * Return the coordinates of the next unsolved square in the current game
  */
-Sudoku.prototype.getNextEmpty = function() {
-  for (var x = 0; x < 9; x++) {
-    for (var y = 0; y < 9; y++) {
+Sudoku.prototype.getNextEmpty = function(last) {
+  for (var x = last.row; x < 9; x++) {
+    for (var y = last.col; y < 9; y++) {
       if (this.game[x][y] === 0) {
         return { row: x, col: y };
       }
@@ -155,7 +155,7 @@ Sudoku.prototype.solve = function() {
     return true;
   }
 
-  var next = this.getNextEmpty();
+  var next = this.getNextEmpty({ row: 0, col: 0 });
   var possibleValues = this.getPossibleValues(next.row, next.col);
 
   if (possibleValues.length === 0) {
@@ -164,7 +164,7 @@ Sudoku.prototype.solve = function() {
 
   for (var i = 0; i < possibleValues.length; i++) {
     this.setValue(next.row, next.col, possibleValues[i]);
-    var finished = this.solve();
+    var finished = this.solve(next);
     if (finished) {
       return true;
     }

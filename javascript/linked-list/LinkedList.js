@@ -75,4 +75,33 @@ LinkedList.prototype.reverseRecursive = function(node) {
     return node
 }
 
+/**
+ * If the list has a cycle, this will return the node that creates the cycle by pointing back to a node in the list.
+ */
+LinkedList.prototype.findCycle = function() {
+    if (!this.head.next) {
+        return null;
+    }
+
+    var last = this.head
+    var slow = this.head.next
+    var fast = this.head.next.next
+    var foundCycle = false
+
+    while (fast && fast.next) {
+        if (fast === slow) {
+            if (foundCycle) {
+                return last
+            } else {
+                foundCycle = true
+                slow = this.head
+            }
+        }
+        last = fast.next
+        slow = slow.next
+        fast = fast.next.next
+    }
+    return null;
+}
+
 module.exports = LinkedList
