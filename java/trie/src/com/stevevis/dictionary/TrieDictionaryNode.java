@@ -22,7 +22,7 @@ public class TrieDictionaryNode {
      */
     TrieDictionaryNode addChild(char value) {
         TrieDictionaryNode result = this;
-        int numeric = value;
+        int numeric = value - 'a';
 
         if (this.children[numeric] == null) {
             result = new TrieDictionaryNode(this.children.length);
@@ -43,7 +43,7 @@ public class TrieDictionaryNode {
      */
     TrieDictionaryNode getChild(char value) {
         TrieDictionaryNode result = null;
-        int numeric = value;
+        int numeric = value - 'a';
 
         if (this.children[numeric] != null) {
             result = this.children[numeric];

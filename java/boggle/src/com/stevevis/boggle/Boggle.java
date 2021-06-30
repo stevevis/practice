@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 public class Boggle {
     private static final int BOARD_SIZE = 4;
 
-    private IDictionary dictionary;
-    private char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
+    private final IDictionary dictionary;
+    private final char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
     private List<String> words;
 
     public Boggle() {
@@ -71,8 +71,8 @@ public class Boggle {
         }
 
         if (dictionary.isPrefix(word)) {
-            for (int i = (x - 1 >= 0 ? x - 1 : 0); i <= (x + 1 < BOARD_SIZE ? x + 1 : x); i++) {
-                for (int j = (y - 1 >= 0 ? y - 1 : 0); j <= (y + 1 < BOARD_SIZE ? y + 1 : y); j++) {
+            for (int i = (Math.max(x - 1, 0)); i <= (x + 1 < BOARD_SIZE ? x + 1 : x); i++) {
+                for (int j = (Math.max(y - 1, 0)); j <= (y + 1 < BOARD_SIZE ? y + 1 : y); j++) {
                     if (!visited[i][j]) {
                         visited[i][j] = true;
                         dfs(i, j, word, visited);

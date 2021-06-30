@@ -4,7 +4,7 @@ package com.stevevis.dictionary;
  * Created by Steve on 12/11/14.
  */
 public class TrieDictionary implements IDictionary {
-    private static final int NODE_LIMIT = 256;
+    private static final int NODE_LIMIT = 26;
 
     TrieDictionaryNode head;
 
@@ -15,7 +15,7 @@ public class TrieDictionary implements IDictionary {
     @Override
     public void add(String string) {
         TrieDictionaryNode current = this.head;
-        for (char c : string.toCharArray()) {
+        for (char c : string.toLowerCase().toCharArray()) {
             current = current.addChild(c);
         }
         current.isEnd = true;
@@ -24,7 +24,7 @@ public class TrieDictionary implements IDictionary {
     @Override
     public boolean contains(String string) {
         TrieDictionaryNode current = this.head;
-        for (char c : string.toCharArray()) {
+        for (char c : string.toLowerCase().toCharArray()) {
             current = current.getChild(c);
             if (current == null) {
                 return false;
@@ -36,13 +36,13 @@ public class TrieDictionary implements IDictionary {
     @Override
     public boolean isPrefix(String string) {
         TrieDictionaryNode current = this.head;
-        for (char c : string.toCharArray()) {
+        for (char c : string.toLowerCase().toCharArray()) {
             current = current.getChild(c);
             if (current == null) {
                 return false;
             }
         }
-        return true;
+        return current.numChildren > 0;
     }
 
     @Override

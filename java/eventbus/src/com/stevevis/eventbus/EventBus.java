@@ -14,14 +14,14 @@ import java.util.function.Consumer;
  * Created by Steve on 10/29/15.
  */
 public class EventBus {
-    private HashMap<Topic, Set<Subscriber>> topicHash;
-    private HashMap<Subscriber, Set<Topic>> subscriberHash;
+    private final HashMap<Topic, Set<Subscriber>> topicHash;
+    private final HashMap<Subscriber, Set<Topic>> subscriberHash;
     private final Object subscribeLock;
     private final ExecutorService pool;
 
     public EventBus(int poolSize) {
-        topicHash = new HashMap<Topic, Set<Subscriber>>();
-        subscriberHash = new HashMap<Subscriber, Set<Topic>>();
+        topicHash = new HashMap<>();
+        subscriberHash = new HashMap<>();
         subscribeLock = new Object();
         pool = Executors.newFixedThreadPool(poolSize);
     }
