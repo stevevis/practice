@@ -1,5 +1,5 @@
-const DELIMINATOR = ',';
-const TERMINATOR = '.';
+export const DELIMINATOR = ' ';
+export const TERMINATOR = '.';
 
 interface BstLevel {
   readonly bst?: BinarySearchTree;
@@ -7,7 +7,7 @@ interface BstLevel {
 }
 
 export default class BinarySearchTree {
-  private value: number;
+  value: number;
   private left?: BinarySearchTree;
   private right?: BinarySearchTree;
 
@@ -16,9 +16,7 @@ export default class BinarySearchTree {
   }
 
   public insert(value: number): void {
-    if (this.value === undefined) {
-      this.value = value;
-    } else if (value < this.value) {
+    if (value < this.value) {
       this.left ? this.left.insert(value) : this.left = new BinarySearchTree(value);
     } else {
       this.right ? this.right.insert(value) : this.right = new BinarySearchTree(value)
@@ -38,6 +36,7 @@ export default class BinarySearchTree {
   public delete(value: number, parent?: BinarySearchTree): void {
     if (this.value === value) {
       if (this.left === undefined && this.right === undefined) {
+        // If both left and right are undefined, then we can delete the leaf node
         if (parent === undefined) {
           throw new Error("Can't delete last node in BST!");
         } else if (parent.left?.value === this.value) {
@@ -46,14 +45,17 @@ export default class BinarySearchTree {
           delete parent.right;
         }
       } else if (this.left === undefined && this.right !== undefined) {
+        // If we only have a right node, just replace this node with the right node
         this.value = this.right.value;
         this.left = this.right.left;
         this.right = this.right.right;
       } else if (this.right === undefined && this.left !== undefined) {
+        // If we only have a left node, just replace this node with the left node
         this.value = this.left.value;
         this.right = this.left.right;
         this.left = this.left.left;
       } else if (this.right !== undefined) {
+        // If we have a right and a left node, swap this with the next node in order on the right side, then delete this node
         this.value = parseInt(this.right.serializeInOrder().split(' ')[0]);
         this.right.delete(this.value, this);
       }
@@ -68,11 +70,11 @@ export default class BinarySearchTree {
     if (this.left) {
       data = this.left.serializeInOrder(data);
     }
-    data += `${this.value} `;
+    data += `${DELIMINATOR}${this.value}`;
     if (this.right) {
       data = this.right.serializeInOrder(data);
     }
-    return data;
+    return data.trim();
   }
 
   public serializeLevelOrder(): string {
@@ -96,14 +98,15 @@ export default class BinarySearchTree {
           } else {
             currentLevelHasValue = false;
           }
+          data = data.trim();
           data += '\n';
           currentLevel = current.level;
         }
         if (current.bst) {
-          data += `${current.bst.value} `;
+          data += `${current.bst.value}${DELIMINATOR}`;
           currentLevelHasValue = true;
         } else {
-          data += '. '
+          data += `.${DELIMINATOR}`;
         }
         if (current.bst?.left) {
           queue.push({bst: current.bst.left, level: current.level + 1});
@@ -117,7 +120,7 @@ export default class BinarySearchTree {
         }
       }
     }
-    return data;
+    return data.trim();
   }
 
   public serialize(data = ''): string {
@@ -150,7 +153,7 @@ export default class BinarySearchTree {
     const next = values.shift();
     let bst;
 
-    if (next !== undefined && next !== TERMINATOR) {
+    if (next && next !== TERMINATOR) {
       bst = new BinarySearchTree(parseInt(next));
       bst.left = BinarySearchTree.deserializeFromArray(values);
       bst.right = BinarySearchTree.deserializeFromArray(values);
@@ -158,71 +161,4 @@ export default class BinarySearchTree {
 
     return bst;
   }
-}
-
-const bst = new BinarySearchTree(10);
-bst.insert(8);
-bst.insert(9);
-bst.insert(5);
-bst.insert(1);
-bst.insert(20);
-bst.insert(15);
-bst.insert(18);
-bst.insert(22);
-
-const inOrder = bst.serializeInOrder();
-console.log(inOrder);
-
-const levelOrder = bst.serializeLevelOrder();
-console.log(levelOrder);
-
-const serialized = bst.serialize();
-console.log(serialized);
-
-console.log("\nTest deserialization...\n");
-
-const deserializedBst = BinarySearchTree.deserialize(serialized);
-console.log(deserializedBst.serializeInOrder());
-console.log(deserializedBst.serializeLevelOrder());
-console.log(deserializedBst.serialize());
-
-console.log("\nTest deletion...\n");
-console.log("Delete 10");
-bst.delete(10);
-console.log(bst.serializeLevelOrder());
-
-console.log("\nDelete 8");
-bst.delete(8);
-console.log(bst.serializeLevelOrder());
-
-console.log("\nDelete 22");
-bst.delete(22);
-console.log(bst.serializeLevelOrder());
-
-console.log("\nDelete 5");
-bst.delete(5);
-console.log(bst.serializeLevelOrder());
-
-console.log("\nDelete 15");
-bst.delete(15);
-console.log(bst.serializeLevelOrder());
-
-console.log("\nDelete 18");
-bst.delete(18);
-console.log(bst.serializeLevelOrder());
-
-console.log("\nDelete 1");
-bst.delete(1);
-console.log(bst.serializeLevelOrder());
-
-console.log("\nDelete 9");
-bst.delete(9);
-console.log(bst.serializeLevelOrder());
-
-try {
-  console.log("\nDelete 20");
-  bst.delete(20);
-  console.log(bst.serializeLevelOrder());
-} catch (e) {
-  console.log(e.message);
 }
