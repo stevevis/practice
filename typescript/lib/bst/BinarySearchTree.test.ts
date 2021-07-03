@@ -1,4 +1,4 @@
-import BinarySearchTree, { DELIMINATOR } from "./BinarySearchTree";
+import BinarySearchTree, { DELIMINATOR } from './BinarySearchTree';
 
 const testCase = [10, 5, 15, 8, 3, 20, 12, 13, 14, 19, 18];
 

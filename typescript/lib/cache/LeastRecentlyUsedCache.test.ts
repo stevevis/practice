@@ -1,4 +1,4 @@
-import LeastRecentlyUsedCache from "./LeastRecentlyUsedCache";
+import LeastRecentlyUsedCache from './LeastRecentlyUsedCache';
 
 test('Insert and get', () => {
   const cache = new LeastRecentlyUsedCache<string>(10);
