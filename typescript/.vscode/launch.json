@@ -15,7 +15,8 @@
       "outFiles": [
         "${workspaceFolder}/**/*.js"
       ],
-      "outputCapture": "std"
+      "outputCapture": "std",
+      "cwd": "${fileDirname}",
     }
   ]
 }
