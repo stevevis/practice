@@ -47,11 +47,7 @@ public class EventBus {
             }
             subscribers.add(subscriber);
 
-            Set<Topic> topics = subscriberHash.get(subscriber);
-            if (topics == null) {
-                topics = new HashSet<Topic>();
-                subscriberHash.put(subscriber, topics);
-            }
+            Set<Topic> topics = subscriberHash.computeIfAbsent(subscriber, k -> new HashSet<Topic>());
             topics.add(topic);
         }
     }

@@ -12,18 +12,26 @@ public class EventBusTest {
 
         Subscriber subscriberA = new PrintSubscriber("PrintSubscriberA");
 
+        System.out.println("Subscribing subscriberA to topicA and topicB");
         eventBus.subscribe(topicA, subscriberA);
         eventBus.subscribe(topicB, subscriberA);
 
+        System.out.println("Sending message to topicA");
         eventBus.publish(topicA, "This is a message to Topic A");
+        System.out.println("Sending message to topicB");
         eventBus.publish(topicB, "This is a message to Topic B");
 
+        System.out.println("Unsubscribing subscriberA from topicB");
         eventBus.unsubscribe(topicB, subscriberA);
 
         Subscriber subscriberB = new PrintSubscriber("PrintSubscriberB");
+
+        System.out.println("Subscribing subscriberB to topicB");
         eventBus.subscribe(topicB, subscriberB);
 
+        System.out.println("Sending message to topicA");
         eventBus.publish(topicA, "This is a message to Topic A");
+        System.out.println("Sending message to topicB");
         eventBus.publish(topicB, "This is a message to Topic B");
 
         eventBus.shutdown();
