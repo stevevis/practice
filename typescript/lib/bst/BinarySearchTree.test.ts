@@ -31,6 +31,7 @@ test('Serialize and deserialize', () => {
   const bstString = bst.serialize();
   const bstDeserialized = BinarySearchTree.deserialize(bstString);
   expect(bstDeserialized.serializeInOrder()).toBe(bst.serializeInOrder());
+  expect(bstDeserialized.serializeLevelOrder()).toBe(bst.serializeLevelOrder());
 });
 
 test('Deserialize from empty string', () => {

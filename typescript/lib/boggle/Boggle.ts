@@ -61,14 +61,11 @@ function dfs(board: string[][], x: number, y: number, seen: boolean[][], wordSoF
 
   if (trie.isPrefix(wordSoFar)) {
     seen[x][y] = true;
-    dfs(board, x - 1, y - 1, seen, wordSoFar);
-    dfs(board, x - 1, y, seen, wordSoFar);
-    dfs(board, x - 1, y + 1, seen, wordSoFar);
-    dfs(board, x, y - 1, seen, wordSoFar);
-    dfs(board, x, y + 1, seen, wordSoFar);
-    dfs(board, x + 1, y - 1, seen, wordSoFar);
-    dfs(board, x + 1, y, seen, wordSoFar);
-    dfs(board, x + 1, y + 1, seen, wordSoFar);
+    for (let row = x - 1; row <= x + 1; row++) {
+      for (let col = y - 1; col <= y + 1; col++) {
+        dfs(board, row, col, seen, wordSoFar);
+      }
+    }
     seen[x][y] = false;
   }
 }

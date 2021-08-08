@@ -35,11 +35,11 @@ export default class MinHeap {
   private bubbleDown(index: number): void {
     const leftIndex = index * 2 + 1;
     const rightIndex = index * 2 + 2;
-    if (this.heap[index] > this.heap[leftIndex]) {
+    if (leftIndex < this.heap.length && this.heap[index] > this.heap[leftIndex]) {
       this.swap(index, leftIndex);
       this.bubbleDown(leftIndex);
     } 
-    if (this.heap[index] > this.heap[rightIndex]) {
+    if (rightIndex < this.heap.length && this.heap[index] > this.heap[rightIndex]) {
       this.swap(index, rightIndex);
       this.bubbleDown(rightIndex);
     }

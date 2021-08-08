@@ -43,3 +43,17 @@ test('Bubble down right', () => {
   minHeap.pop();
   expect(minHeap.peak()).toBe(7);
 });
+
+test('Insert and pop', () => {
+  const minHeap = new MinHeap();
+  minHeap.insert(5);
+  minHeap.insert(9);
+  minHeap.insert(7);
+  minHeap.insert(10);
+  minHeap.insert(8);
+  expect(minHeap.pop()).toBe(5);
+  expect(minHeap.pop()).toBe(7);
+  expect(minHeap.pop()).toBe(8);
+  expect(minHeap.pop()).toBe(9);
+  expect(minHeap.pop()).toBe(10);
+});
