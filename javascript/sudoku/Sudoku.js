@@ -21,14 +21,14 @@ function Sudoku() {
  */
 Sudoku.prototype.print = function() {
   for (var i = 0; i < 9; i++) {
-    if (i % 3 === 0) { process.stdout.write("\n"); }
+    if (i % 3 === 0) { process.stdout.write(" ---------------------------\n"); }
     for (var j = 0; j < 9; j++) {
-      if (j % 3 === 0) { process.stdout.write("  "); }
+      if (j % 3 === 0) { process.stdout.write(" | "); }
       process.stdout.write(this.game[i][j] + " ");
     }
-    process.stdout.write("\n");
+    process.stdout.write("|\n");
   }
-  process.stdout.write("\n");
+  process.stdout.write(" ---------------------------\n");
 };
 
 /*
