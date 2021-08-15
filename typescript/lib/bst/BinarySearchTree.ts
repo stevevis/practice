@@ -6,6 +6,10 @@ interface BstLevel {
   readonly level: number;
 }
 
+interface Count {
+  count: number;
+}
+
 export default class BinarySearchTree {
   value: number;
   private left?: BinarySearchTree;
@@ -31,6 +35,32 @@ export default class BinarySearchTree {
     } else {
       return this.right?.find(value);
     }
+  }
+
+  public findKthLargest(k: number, count: Count = { count: 0 }): number {
+    let result = -1;
+
+    if (this.right && count.count < k) {
+      const right = this.right.findKthLargest(k, count);
+      if (right !== -1) {
+        result = right;
+      }
+    }
+
+    count.count++;
+    //console.log(`[${k}] At value ${this.value} count is ${count.count}`);
+    if (count.count === k) {
+      result = this.value;
+    }
+
+    if (this.left && count.count < k) {
+      const left = this.left.findKthLargest(k, count);
+      if (left !== -1) {
+        result = left;
+      }
+    }
+
+    return result;
   }
 
   public delete(value: number, parent?: BinarySearchTree): void {

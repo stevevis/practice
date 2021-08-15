@@ -82,6 +82,13 @@ test('Delete with children on both sides', () => {
   expectBstIsInOrder(bst, DELIMINATOR)
 });
 
+test('Find Kth largest', () => {
+  const bst = createBst(testCase);
+  expect(bst.findKthLargest(1)).toBe(20);
+  expect(bst.findKthLargest(3)).toBe(18);
+  expect(bst.findKthLargest(11)).toBe(3);
+});
+
 function createBst(values: number[]): BinarySearchTree {
   const bst = new BinarySearchTree(values[0]);
   values.slice(1).forEach((value) => {

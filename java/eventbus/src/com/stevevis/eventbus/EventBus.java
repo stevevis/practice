@@ -95,9 +95,9 @@ public class EventBus {
         });
     }
 
-    private class Publisher implements Runnable {
-        private Object message;
-        private Consumer<Object> consumer;
+    private static class Publisher implements Runnable {
+        private final Object message;
+        private final Consumer<Object> consumer;
 
         public Publisher(Object message, Consumer<Object> consumer) {
             this.message = message;
