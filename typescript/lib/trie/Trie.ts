@@ -17,7 +17,7 @@ export default class Trie {
     }
 
     if (word.length > 1) {
-      child.insert(word.substr(1));
+      child.insert(word.substring(1));
     } else {
       child.setIsEnd();
     }
@@ -31,7 +31,7 @@ export default class Trie {
     if (child === undefined) {
       return false;
     } else if (word.length > 1) {
-      return child.contains(word.substr(1));
+      return child.contains(word.substring(1));
     } else {
       return child.isEnd;
     }
@@ -45,7 +45,7 @@ export default class Trie {
     if (child === undefined) {
       return false;
     } else if (word.length > 1) {
-      return child.isPrefix(word.substr(1));
+      return child.isPrefix(word.substring(1));
     } else {
       return child.children.size > 0;
     }
@@ -58,6 +58,6 @@ export default class Trie {
   }
 
   private getFirstChar(word: string): string {
-    return word.substr(0, 1).toLowerCase();
+    return word.substring(0, 1).toLowerCase();
   }
 }

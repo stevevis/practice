@@ -154,16 +154,32 @@ export default class BinarySearchTree {
   }
 
   public serialize(data = ''): string {
-    data += `${this.value}${DELIMINATOR}`;
+    // data += `${this.value}${DELIMINATOR}`;
+    // if (this.left) {
+    //   data = this.left.serialize(data);
+    // } else {
+    //   data += TERMINATOR + DELIMINATOR;
+    // }
+    // if (this.right) {
+    //   data = this.right.serialize(data);
+    // } else {
+    //   data += TERMINATOR + DELIMINATOR;
+    // }
+    // return data;
+    return this.serializeToArray().join('');
+  }
+
+  public serializeToArray(data: string[] = []): string[] {
+    data.push(`${this.value}${DELIMINATOR}`);
     if (this.left) {
-      data = this.left.serialize(data);
+      data.concat(this.left.serializeToArray(data));
     } else {
-      data += TERMINATOR + DELIMINATOR;
+      data.push(TERMINATOR + DELIMINATOR);
     }
     if (this.right) {
-      data = this.right.serialize(data);
+      data.concat(this.right.serializeToArray(data));
     } else {
-      data += TERMINATOR + DELIMINATOR;
+      data.push(TERMINATOR + DELIMINATOR);
     }
     return data;
   }
